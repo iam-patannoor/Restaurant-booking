@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Gourmet Haven | Restaurant Table Booking</title>
+    <!-- Google Fonts & simple CSS reset -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #f8f5f0 0%, #f0ede8 100%);
+            color: #2c2b28;
+            line-height: 1.4;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        /* main container */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* header area */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .resto-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #e7d9c5;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #5e3e2b;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(2px);
+        }
+
+        .resto-badge i {
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #3b2a1f, #a46b3a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: #6b4c3b;
+            max-width: 550px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* two-column layout: booking form + summary/sidebar */
+        .booking-dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        /* form card */
+        .form-card {
+            flex: 1.5;
+            min-width: 280px;
+            background: #fffef9;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0,0,0,0.02);
+            padding: 1.8rem 2rem;
+            transition: all 0.2s ease;
+            border: 1px solid #f0e5d8;
+        }
+
+        .reservation-card {
+            flex: 1;
+            min-width: 280px;
+            background: #fffef9;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+            padding: 1.8rem 2rem;
+            border: 1px solid #f0e5d8;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-left: 5px solid #c87a3a;
+            padding-left: 1rem;
+        }
+
+        .section-title i {
+            color: #c87a3a;
+            font-size: 1.3rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.4rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: #4c3a2c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group label i {
+            width: 1.2rem;
+            color: #c87a3a;
+        }
+
+        input, select, textarea {
+            background: #ffffff;
+            border: 1.5px solid #e6ddcf;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            outline: none;
+            color: #2c2b28;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #c87a3a;
+            box-shadow: 0 0 0 3px rgba(200, 122, 58, 0.2);
+        }
+
+        .row-2cols {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .row-2cols .input-group {
+            flex: 1;
+        }
+
+        .btn-book {
+            background: #c87a3a;
+            color: white;
+            border: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            padding: 0.9rem;
+            border-radius: 2rem;
+            width: 100%;
+            margin-top: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(200,122,58,0.2);
+        }
+
+        .btn-book:hover {
+            background: #b05e2a;
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* summary card (current bookings) */
+        .booking-list {
+            flex: 1;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+            padding-right: 4px;
+        }
+
+        .booking-item {
+            background: #faf7f2;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid #c87a3a;
+            transition: 0.1s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .guest-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #2c2b28;
+        }
+
+        .booking-time {
+            font-size: 0.7rem;
+            background: #e9e1d6;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            color: #5e3e2b;
+        }
+
+        .booking-details {
+            font-size: 0.85rem;
+            color: #5e5b56;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 0.4rem 0 0.3rem;
+        }
+
+        .booking-details span i {
+            width: 1.1rem;
+            margin-right: 4px;
+            color: #c87a3a;
+        }
+
+        .cancel-btn {
+            background: none;
+            border: none;
+            color: #9e7b64;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            transition: 0.1s;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 40px;
+            background: #f2eae2;
+        }
+
+        .cancel-btn:hover {
+            background: #f0dfd0;
+            color: #b05228;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #b59e88;
+            font-size: 0.9rem;
+        }
+
+        .info-total {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            background: #f8f2ea;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #9f8977;
+            border-top: 1px solid #e6d9ce;
+            padding-top: 2rem;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 1rem;
+            }
+            .form-card, .reservation-card {
+                padding: 1.3rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* custom scroll */
+        .booking-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .booking-list::-webkit-scrollbar-track {
+            background: #ede5db;
+            border-radius: 10px;
+        }
+        .booking-list::-webkit-scrollbar-thumb {
+            background: #c9b6a2;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="hero-section">
+        <div class="resto-badge">
+            <i class="fas fa-utensils"></i> <span>since 2012</span>
+        </div>
+        <h1>Gourmet Haven</h1>
+        <div class="tagline">Reserve your table · authentic flavors · warm ambiance</div>
+    </div>
+
+    <div class="booking-dashboard">
+        <!-- Booking Form Card -->
+        <div class="form-card">
+            <div class="section-title">
+                <i class="fas fa-calendar-check"></i>
+                <span>Make a reservation</span>
+            </div>
+            <form id="bookingForm">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> Full name</label>
+                    <input type="text" id="guestName" placeholder="John Doe" required>
+                </div>
+                <div class="row-2cols">
+                    <div class="input-group">
+                        <label><i class="fas fa-phone-alt"></i> Phone</label>
+                        <input type="tel" id="guestPhone" placeholder="+1 234 567 890" required>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="guestEmail" placeholder="hello@example.com" required>
+                    </div>
+                </div>
+                <div class="row-2cols">
+                    <div class="input-group">
+                        <label><i class="fas fa-users"></i> Guests</label>
+                        <select id="guestCount">
+                            <option value="1">1 person</option>
+                            <option value="2" selected>2 people</option>
+                            <option value="3">3 people</option>
+                            <option value="4">4 people</option>
+                            <option value="5">5 people</option>
+                            <option value="6">6 people</option>
+                            <option value="7">7+ (group)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-clock"></i> Time slot</label>
+                        <select id="timeSlot">
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="12:30 PM">12:30 PM</option>
+                            <option value="1:00 PM">1:00 PM</option>
+                            <option value="1:30 PM">1:30 PM</option>
+                            <option value="6:00 PM">6:00 PM</option>
+                            <option value="6:30 PM" selected>6:30 PM</option>
+                            <option value="7:00 PM">7:00 PM</option>
+                            <option value="7:30 PM">7:30 PM</option>
+                            <option value="8:00 PM">8:00 PM</option>
+                            <option value="8:30 PM">8:30 PM</option>
+                            <option value="9:00 PM">9:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-calendar-alt"></i> Reservation date</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-comment"></i> Special request (optional)</label>
+                    <textarea rows="2" id="specialRequest" placeholder="e.g., window table, anniversary, allergies..."></textarea>
+                </div>
+                <button type="submit" class="btn-book"><i class="fas fa-bookmark"></i> Reserve table</button>
+            </form>
+        </div>
+
+        <!-- Sidebar: current bookings and summary -->
+        <div class="reservation-card">
+            <div class="section-title">
+                <i class="fas fa-receipt"></i>
+                <span>Your upcoming bookings</span>
+            </div>
+            <div id="bookingsContainer" class="booking-list">
+                <!-- dynamic booking items will appear here -->
+                <div class="empty-state">
+                    <i class="fas fa-glass-cheers" style="font-size: 1.8rem; opacity: 0.6; display: block; margin-bottom: 12px;"></i>
+                    No reservations yet.<br> Book your first table above!
+                </div>
+            </div>
+            <div class="info-total">
+                <span><i class="fas fa-chair"></i> Total reservations</span>
+                <span id="totalCountBadge">0</span>
+            </div>
+            <p style="font-size: 0.7rem; margin-top: 0.8rem; color:#b7a089; text-align:center;">
+                <i class="fas fa-info-circle"></i> Manage your bookings: click cancel if plans change
+            </p>
+        </div>
+    </div>
+    <footer>
+        <i class="fas fa-location-dot"></i> 123 Culinary Lane, Foodie District  |  <i class="fas fa-phone"></i> +1 (555) 287-1234  |  Open daily 12PM–10PM
+    </footer>
+</div>
+
+<script>
+    // ---------- STATIC UI with localStorage persistence (user-friendly demo) ----------
+    // We store bookings as an array of objects. each booking gets a unique ID.
+    let bookings = [];
+
+    // Helper to load bookings from localStorage
+    function loadBookingsFromStorage() {
+        const stored = localStorage.getItem('restaurant_bookings');
+        if(stored) {
+            try {
+                bookings = JSON.parse(stored);
+                // ensure each booking has all necessary fields (migration safe)
+                if(!Array.isArray(bookings)) bookings = [];
+            } catch(e) { bookings = []; }
+        } else {
+            // Add some beautiful demo data to illustrate UI (so it's not empty for first time)
+            bookings = [
+                {
+                    id: "demo1",
+                    fullName: "Emily Chen",
+                    phone: "+1 555 234 5678",
+                    email: "emily@example.com",
+                    guests: "2",
+                    timeSlot: "7:00 PM",
+                    date: getTomorrowDate(),
+                    specialRequest: "Celebrating birthday, maybe dessert?",
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: "demo2",
+                    fullName: "Michael Rivera",
+                    phone: "+1 555 987 1234",
+                    email: "michael.r@example.com",
+                    guests: "4",
+                    timeSlot: "6:30 PM",
+                    date: getDayAfterTomorrow(),
+                    specialRequest: "Vegetarian options preferred",
+                    createdAt: new Date().toISOString()
+                }
+            ];
+            saveBookingsToStorage();
+        }
+        renderBookingsList();
+        updateTotalBadge();
+    }
+
+    // helper to get tomorrow's date in YYYY-MM-DD
+    function getTomorrowDate() {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        return tomorrow.toISOString().split('T')[0];
+    }
+
+    function getDayAfterTomorrow() {
+        const today = new Date();
+        const dayAfter = new Date(today);
+        dayAfter.setDate(today.getDate() + 2);
+        return dayAfter.toISOString().split('T')[0];
+    }
+
+    // save to localStorage
+    function saveBookingsToStorage() {
+        localStorage.setItem('restaurant_bookings', JSON.stringify(bookings));
+    }
+
+    // render dynamic list with cancel buttons
+    function renderBookingsList() {
+        const container = document.getElementById('bookingsContainer');
+        if(!container) return;
+
+        if(bookings.length === 0) {
+            container.innerHTML = `<div class="empty-state">
+                <i class="fas fa-glass-cheers" style="font-size: 1.8rem; opacity: 0.6; display: block; margin-bottom: 12px;"></i>
+                No reservations yet.<br> Book your first table above!
+            </div>`;
+            return;
+        }
+
+        // sort bookings by date and time (just for better UX: earliest first)
+        const sorted = [...bookings].sort((a,b) => {
+            if(a.date === b.date) {
+                const timeA = a.timeSlot;
+                const timeB = b.timeSlot;
+                return timeA.localeCompare(timeB);
+            }
+            return a.date.localeCompare(b.date);
+        });
+
+        container.innerHTML = sorted.map(booking => `
+            <div class="booking-item" data-id="${booking.id}">
+                <div class="booking-header">
+                    <span class="guest-name"><i class="fas fa-user-circle"></i> ${escapeHtml(booking.fullName)}</span>
+                    <span class="booking-time"><i class="far fa-clock"></i> ${escapeHtml(booking.timeSlot)}</span>
+                </div>
+                <div class="booking-details">
+                    <span><i class="fas fa-calendar-day"></i> ${formatDateNice(booking.date)}</span>
+                    <span><i class="fas fa-users"></i> ${getGuestLabel(booking.guests)}</span>
+                    <span><i class="fas fa-phone-alt"></i> ${escapeHtml(booking.phone || '—')}</span>
+                </div>
+                ${booking.specialRequest ? `<div style="font-size:0.75rem; color:#a07f64; margin: 6px 0 6px 0;"><i class="fas fa-pen-fancy"></i> “${escapeHtml(booking.specialRequest.substring(0, 60))}”</div>` : ''}
+                <button class="cancel-btn" data-id="${booking.id}"><i class="fas fa-trash-alt"></i> Cancel reservation</button>
+            </div>
+        `).join('');
+
+        // attach cancel event listeners to each cancel button
+        document.querySelectorAll('.cancel-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const bookingId = btn.getAttribute('data-id');
+                if(bookingId) {
+                    cancelBookingById(bookingId);
+                }
+            });
+        });
+    }
+
+    function getGuestLabel(guestVal) {
+        const val = parseInt(guestVal);
+        if(val >= 7) return '7+ guests';
+        return `${val} ${val === 1 ? 'guest' : 'guests'}`;
+    }
+
+    function formatDateNice(dateStr) {
+        if(!dateStr) return 'unknown';
+        const parts = dateStr.split('-');
+        if(parts.length !== 3) return dateStr;
+        const dateObj = new Date(dateStr);
+        if(isNaN(dateObj)) return dateStr;
+        return dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    function updateTotalBadge() {
+        const badge = document.getElementById('totalCountBadge');
+        if(badge) badge.innerText = bookings.length;
+    }
+
+    // cancel booking by id
+    function cancelBookingById(id) {
+        const newBookings = bookings.filter(b => b.id !== id);
+        if(newBookings.length === bookings.length) return;
+        bookings = newBookings;
+        saveBookingsToStorage();
+        renderBookingsList();
+        updateTotalBadge();
+        showToast(`Reservation cancelled successfully`, '#b05e2a');
+    }
+
+    // add new booking
+    function addBooking(bookingData) {
+        // check for duplicate? optional: avoid same phone + time + date conflict? but keep it simple friendly.
+        // just ensure no identical ID
+        const newId = 'bk_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+        const newBooking = {
+            id: newId,
+            fullName: bookingData.fullName.trim(),
+            phone: bookingData.phone.trim(),
+            email: bookingData.email.trim(),
+            guests: bookingData.guests,
+            timeSlot: bookingData.timeSlot,
+            date: bookingData.date,
+            specialRequest: bookingData.specialRequest ? bookingData.specialRequest.trim() : '',
+            createdAt: new Date().toISOString()
+        };
+        bookings.push(newBooking);
+        saveBookingsToStorage();
+        renderBookingsList();
+        updateTotalBadge();
+        return newBooking;
+    }
+
+    // simple toast notif (lightweight)
+    function showToast(message, bgColor = '#2c6e2f') {
+        let toast = document.querySelector('.custom-toast-ui');
+        if(toast) toast.remove();
+        toast = document.createElement('div');
+        toast.className = 'custom-toast-ui';
+        toast.innerText = message;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '25px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = bgColor;
+        toast.style.color = 'white';
+        toast.style.padding = '12px 24px';
+        toast.style.borderRadius = '60px';
+        toast.style.fontWeight = '500';
+        toast.style.fontSize = '0.9rem';
+        toast.style.boxShadow = '0 6px 18px rgba(0,0,0,0.1)';
+        toast.style.zIndex = '999';
+        toast.style.backdropFilter = 'blur(4px)';
+        toast.style.fontFamily = "'Inter', sans-serif";
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            if(toast) toast.remove();
+        }, 2800);
+    }
+
+    // validation and form submit handler
+    const form = document.getElementById('bookingForm');
+    if(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const nameInput = document.getElementById('guestName');
+            const phoneInput = document.getElementById('guestPhone');
+            const emailInput = document.getElementById('guestEmail');
+            const guestCountSelect = document.getElementById('guestCount');
+            const timeSlotSelect = document.getElementById('timeSlot');
+            const dateInput = document.getElementById('bookingDate');
+            const specialRequestText = document.getElementById('specialRequest');
+
+            // validations
+            const fullName = nameInput.value.trim();
+            if(fullName === '') {
+                showToast('Please enter your full name', '#b85c38');
+                nameInput.focus();
+                return;
+            }
+            const phoneVal = phoneInput.value.trim();
+            if(phoneVal === '') {
+                showToast('Phone number is required', '#b85c38');
+                phoneInput.focus();
+                return;
+            }
+            const emailVal = emailInput.value.trim();
+            if(emailVal === '' || !emailVal.includes('@') || !emailVal.includes('.')) {
+                showToast('Valid email address required', '#b85c38');
+                emailInput.focus();
+                return;
+            }
+            let bookingDate = dateInput.value;
+            if(bookingDate === '') {
+                showToast('Please select a reservation date', '#b85c38');
+                dateInput.focus();
+                return;
+            }
+            // optional: prevent past date selection
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const selectedDateObj = new Date(bookingDate);
+            if(selectedDateObj < today) {
+                showToast('Reservation date cannot be in the past. Choose today or future.', '#b85c38');
+                dateInput.value = '';
+                dateInput.focus();
+                return;
+            }
+
+            const guestCount = guestCountSelect.value;
+            const timeSlot = timeSlotSelect.value;
+            const specialReq = specialRequestText.value;
+
+            // add booking
+            const newBooking = addBooking({
+                fullName: fullName,
+                phone: phoneVal,
+                email: emailVal,
+                guests: guestCount,
+                timeSlot: timeSlot,
+                date: bookingDate,
+                specialRequest: specialReq
+            });
+
+            // clear only special request but keep other fields? user friendly: clear only optional and maybe name? but better not clear all
+            // Clear the form fields except some? We'll reset the name, phone, email and special but keep default guests/time, but date reset to tomorrow friendly
+            nameInput.value = '';
+            phoneInput.value = '';
+            emailInput.value = '';
+            specialRequestText.value = '';
+            // set date to tomorrow by default for next booking
+            const tomorrowDate = new Date();
+            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+            dateInput.value = tomorrowDate.toISOString().split('T')[0];
+            // Set a default guest count as 2, time slot as default 6:30pm (preserve)
+            guestCountSelect.value = '2';
+            timeSlotSelect.value = '6:30 PM';
+            
+            showToast(`✨ Table reserved for ${fullName} at ${timeSlot} on ${formatDateNice(bookingDate)}!`, '#5f8b5e');
+            // re render already called inside addBooking
+        });
+    }
+
+    // set default date to tomorrow on page load if date input empty
+    function setDefaultDate() {
+        const datePicker = document.getElementById('bookingDate');
+        if(datePicker && !datePicker.value) {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const yyyy = tomorrow.getFullYear();
+            const mm = String(tomorrow.getMonth() + 1).padStart(2,'0');
+            const dd = String(tomorrow.getDate()).padStart(2,'0');
+            datePicker.value = `${yyyy}-${mm}-${dd}`;
+        }
+    }
+
+    // Initialize storage and render
+    loadBookingsFromStorage();
+    setDefaultDate();
+
+    // also add live listener to any future button renders (just re-run for dynamic cancel)
+    window.addEventListener('load', () => {
+        // additional if needed
+    });
+</script>
+</body>
+</html>
